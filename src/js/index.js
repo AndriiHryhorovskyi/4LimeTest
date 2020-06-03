@@ -49,7 +49,7 @@ const storage = new Storage();
 field.onclick = function(event) {
   const click = new Click(event);
   if (!storage.save(click.getInfo())) {
-    // add click to que, wait destination storage will be available
+    // add click to que, wait when destination storage will be available
   }
 };
 
