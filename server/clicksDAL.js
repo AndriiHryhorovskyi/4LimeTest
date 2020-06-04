@@ -5,6 +5,6 @@ module.exports = {
     return [...db.values()];
   },
   save(data){
-    db.save(data);
+    db.add(data);
   }
 }

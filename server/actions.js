@@ -51,23 +51,26 @@ cacheDirectory(STATIC_PATH);
 
 module.exports = {
   get_clicks() {
-    return { data: DAL.getAllLinks() }
+    const clicks = DAL.getAllClicks();
+    return { data: JSON.stringify(clicks) };
   },
 
   save(pathname, body) {
     // validation ommited
-    DAL.save(body)
+    DAL.save(body);
     return {};
   },
 
   serveStatic(pathname) {
+    console.log(pathname)
     const res = { status: 404, data: "", headers: {} };
-
     const WEB_SEP = "/";
-    const platformPath = pathname.split(WEB_SEP).join(path.sep); const filePath =
+    const platformPath = pathname.split(WEB_SEP).join(path.sep);
+    const filePath =
       platformPath === path.sep
         ? path.join(path.sep, "index.html")
-        : platformPath;
+        : platformPath.slice(0, -1);
+
     const fileExt = path.extname(filePath).substring(1);
     const mimeType = MIME_TYPES[fileExt] || MIME_TYPES.html;
     const file = cache.get(filePath);

@@ -31,31 +31,42 @@ class Click {
 
 class Storage {
   constructor() {
-    this.destination = new Set(); // here can be a websocket or http
+    // here can be a WebSocket, localstorage or else
+    this.destination = "http://localhost:3000";
   }
 
   get_clicks() {
-    return [...this.destination.values()];
+    return fetch(`${this.destination}/api/clicks`).then(res => res.json());
   }
 
   save(data) {
-    this.destination.add(data);
-    return true;
+    return fetch(`${this.destination}/api/clicks`, {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }).then(res => res.json());
   }
 }
 
 const storage = new Storage();
 
-field.onclick = function(event) {
+field.onclick = async function(event) {
   const click = new Click(event);
-  if (!storage.save(click.getInfo())) {
+  try {
+    await storage.save(click.getInfo());
+  } catch (err) {
+    // network error or 500
     // add click to que, wait when destination storage will be available
   }
 };
 
-listBtn.onclick = function() {
-  const clickList = storage
-    .get_clicks()
-    .reduce((list, item) => ( list + `<p>${JSON.stringify(item)}</p>` ), '');
-  viewZone.innerHTML = clickList;
+listBtn.onclick = async function() {
+  const clickList = await storage.get_clicks();
+  const clicksView = clickList.reduce(
+    (list, item) => list + `<p>${JSON.stringify(item)}</p>`,
+    "",
+  );
+  viewZone.innerHTML = clicksView;
 };
