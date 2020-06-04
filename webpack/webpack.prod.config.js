@@ -20,28 +20,28 @@ const plugins = [
   new CleanWebpackPlugin(),
   new webpack.HashedModuleIdsPlugin(),
   new MiniCssExtractPlugin({
-    filename: path.join("styles", "[name].[contenthash].css")
+    filename: path.join("styles", "[name].[contenthash].css"),
   }),
   new ImageminPlugin({
     imageminOptions: {
       plugins: [
         imageminGifsicle({
-          optimizationLevel: 3
+          optimizationLevel: 3,
         }),
 
         imageminSvgo({
           removeTitle: true,
-          convertPathData: false
-        })
-      ]
-    }
-  })
+          convertPathData: false,
+        }),
+      ],
+    },
+  }),
 ];
 process.env.tinyPngApiKey
   ? plugins.push(
       new tinyPngWebpackPlugin({
-        key: process.env.tinyPngApiKey
-      })
+        key: process.env.tinyPngApiKey,
+      }),
     )
   : null;
 
@@ -52,12 +52,14 @@ module.exports = merge(config, {
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        use: [{ loader: "babel-loader" }]
+        use: [{ loader: "babel-loader" }],
       },
       {
         test: /\.(sa|sc|c)ss$/,
         use: [
-          { loader: MiniCssExtractPlugin.loader },
+          { loader: "style-loader", options: { sourceMap: false } },
+          // { loader: MiniCssExtractPlugin.loader },
+
           { loader: "css-loader" },
           {
             loader: "postcss-loader",
@@ -65,15 +67,15 @@ module.exports = merge(config, {
               plugins: [
                 autoprefixer,
                 cssnano({
-                  preset: ["default", { discardComments: { removeAll: true } }]
-                })
-              ]
-            }
+                  preset: ["default", { discardComments: { removeAll: true } }],
+                }),
+              ],
+            },
           },
-          { loader: "sass-loader" }
-        ]
-      }
-    ]
+          { loader: "sass-loader" },
+        ],
+      },
+    ],
   },
-  plugins
+  plugins,
 });
