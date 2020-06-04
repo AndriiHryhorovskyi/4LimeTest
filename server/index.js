@@ -9,6 +9,9 @@ const PORT = process.env.PORT || 3000;
 http
   .createServer(handleRequest)
   .listen(PORT)
+  .on('listening', () => {
+    console.log(`\nServer url: http://localhost:${PORT}`)
+  })
   .on("clientError", (err, socket) => {
     socket.end("HTTP/1.1 400 Bad Request\r\n\r\n");
   });
